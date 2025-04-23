@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ERPSYSTEMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="accounts">
+          <Key>
+            <PropertyRef Name="account_id" />
+          </Key>
+          <Property Name="account_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="parent_id" Type="int" />
+          <Property Name="description" Type="text" />
+        </EntityType>
+        <EntityType Name="budgets">
+          <Key>
+            <PropertyRef Name="budget_id" />
+          </Key>
+          <Property Name="budget_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="account_id" Type="int" Nullable="false" />
+          <Property Name="fiscal_year" Type="int" />
+          <Property Name="allocated" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="spent" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="remaining" Type="decimal" Precision="12" Scale="2" />
+        </EntityType>
+        <EntityType Name="invoice_items">
+          <Key>
+            <PropertyRef Name="item_id" />
+          </Key>
+          <Property Name="item_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="invoice_id" Type="int" Nullable="false" />
+          <Property Name="description" Type="text" />
+          <Property Name="quantity" Type="int" />
+          <Property Name="unit_price" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="tax_percent" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="total" Type="decimal" Precision="12" Scale="2" />
+        </EntityType>
+        <EntityType Name="invoices">
+          <Key>
+            <PropertyRef Name="invoice_id" />
+          </Key>
+          <Property Name="invoice_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="customer_name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="issue_date" Type="date" Nullable="false" />
+          <Property Name="due_date" Type="date" />
+          <Property Name="subtotal" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="tax_rate" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="total_amount" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="status" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="reports">
+          <Key>
+            <PropertyRef Name="report_id" />
+          </Key>
+          <Property Name="report_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="20" />
+          <Property Name="period_start" Type="date" />
+          <Property Name="period_end" Type="date" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="file_path" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="transactions">
+          <Key>
+            <PropertyRef Name="transaction_id" />
+          </Key>
+          <Property Name="transaction_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="account_id" Type="int" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+          <Property Name="description" Type="text" />
+          <Property Name="amount" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="related_id" Type="int" />
+        </EntityType>
+        <Association Name="FK__accounts__parent__38996AB5">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="0..1" />
+          <End Role="accounts1" Type="Self.accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_id" />
+            </Principal>
+            <Dependent Role="accounts1">
+              <PropertyRef Name="parent_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__budgets__account__46E78A0C">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="1" />
+          <End Role="budgets" Type="Self.budgets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_id" />
+            </Principal>
+            <Dependent Role="budgets">
+              <PropertyRef Name="account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__invoice_i__invoi__4316F928">
+          <End Role="invoices" Type="Self.invoices" Multiplicity="1" />
+          <End Role="invoice_items" Type="Self.invoice_items" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invoices">
+              <PropertyRef Name="invoice_id" />
+            </Principal>
+            <Dependent Role="invoice_items">
+              <PropertyRef Name="invoice_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__transacti__accou__3C69FB99">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_id" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ERPSYSTEMModelStoreContainer">
+          <EntitySet Name="accounts" EntityType="Self.accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="budgets" EntityType="Self.budgets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invoice_items" EntityType="Self.invoice_items" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invoices" EntityType="Self.invoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="reports" EntityType="Self.reports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="transactions" EntityType="Self.transactions" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__accounts__parent__38996AB5" Association="Self.FK__accounts__parent__38996AB5">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="accounts1" EntitySet="accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__budgets__account__46E78A0C" Association="Self.FK__budgets__account__46E78A0C">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="budgets" EntitySet="budgets" />
+          </AssociationSet>
+          <AssociationSet Name="FK__invoice_i__invoi__4316F928" Association="Self.FK__invoice_i__invoi__4316F928">
+            <End Role="invoices" EntitySet="invoices" />
+            <End Role="invoice_items" EntitySet="invoice_items" />
+          </AssociationSet>
+          <AssociationSet Name="FK__transacti__accou__3C69FB99" Association="Self.FK__transacti__accou__3C69FB99">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ERPSYSTEMModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="account">
+          <Key>
+            <PropertyRef Name="account_id" />
+          </Key>
+          <Property Name="account_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="parent_id" Type="Int32" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="accounts1" Relationship="Self.FK__accounts__parent__38996AB5" FromRole="accounts" ToRole="accounts1" />
+          <NavigationProperty Name="account1" Relationship="Self.FK__accounts__parent__38996AB5" FromRole="accounts1" ToRole="accounts" />
+          <NavigationProperty Name="budgets" Relationship="Self.FK__budgets__account__46E78A0C" FromRole="accounts" ToRole="budgets" />
+          <NavigationProperty Name="transactions" Relationship="Self.FK__transacti__accou__3C69FB99" FromRole="accounts" ToRole="transactions" />
+        </EntityType>
+        <EntityType Name="budget">
+          <Key>
+            <PropertyRef Name="budget_id" />
+          </Key>
+          <Property Name="budget_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="account_id" Type="Int32" Nullable="false" />
+          <Property Name="fiscal_year" Type="Int32" />
+          <Property Name="allocated" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="spent" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="remaining" Type="Decimal" Precision="12" Scale="2" />
+          <NavigationProperty Name="account" Relationship="Self.FK__budgets__account__46E78A0C" FromRole="budgets" ToRole="accounts" />
+        </EntityType>
+        <EntityType Name="invoice_items">
+          <Key>
+            <PropertyRef Name="item_id" />
+          </Key>
+          <Property Name="item_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="invoice_id" Type="Int32" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="quantity" Type="Int32" />
+          <Property Name="unit_price" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="tax_percent" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="total" Type="Decimal" Precision="12" Scale="2" />
+          <NavigationProperty Name="invoice" Relationship="Self.FK__invoice_i__invoi__4316F928" FromRole="invoice_items" ToRole="invoices" />
+        </EntityType>
+        <EntityType Name="invoice">
+          <Key>
+            <PropertyRef Name="invoice_id" />
+          </Key>
+          <Property Name="invoice_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="customer_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="issue_date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="due_date" Type="DateTime" Precision="0" />
+          <Property Name="subtotal" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="tax_rate" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="total_amount" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="invoice_items" Relationship="Self.FK__invoice_i__invoi__4316F928" FromRole="invoices" ToRole="invoice_items" />
+        </EntityType>
+        <EntityType Name="report">
+          <Key>
+            <PropertyRef Name="report_id" />
+          </Key>
+          <Property Name="report_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="period_start" Type="DateTime" Precision="0" />
+          <Property Name="period_end" Type="DateTime" Precision="0" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="file_path" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="transaction">
+          <Key>
+            <PropertyRef Name="transaction_id" />
+          </Key>
+          <Property Name="transaction_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="account_id" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="amount" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="related_id" Type="Int32" />
+          <NavigationProperty Name="account" Relationship="Self.FK__transacti__accou__3C69FB99" FromRole="transactions" ToRole="accounts" />
+        </EntityType>
+        <Association Name="FK__accounts__parent__38996AB5">
+          <End Role="accounts" Type="Self.account" Multiplicity="0..1" />
+          <End Role="accounts1" Type="Self.account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_id" />
+            </Principal>
+            <Dependent Role="accounts1">
+              <PropertyRef Name="parent_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__budgets__account__46E78A0C">
+          <End Role="accounts" Type="Self.account" Multiplicity="1" />
+          <End Role="budgets" Type="Self.budget" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_id" />
+            </Principal>
+            <Dependent Role="budgets">
+              <PropertyRef Name="account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__transacti__accou__3C69FB99">
+          <End Role="accounts" Type="Self.account" Multiplicity="1" />
+          <End Role="transactions" Type="Self.transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_id" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__invoice_i__invoi__4316F928">
+          <End Role="invoices" Type="Self.invoice" Multiplicity="1" />
+          <End Role="invoice_items" Type="Self.invoice_items" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invoices">
+              <PropertyRef Name="invoice_id" />
+            </Principal>
+            <Dependent Role="invoice_items">
+              <PropertyRef Name="invoice_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ERPSYSTEMEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="accounts" EntityType="Self.account" />
+          <EntitySet Name="budgets" EntityType="Self.budget" />
+          <EntitySet Name="invoice_items" EntityType="Self.invoice_items" />
+          <EntitySet Name="invoices" EntityType="Self.invoice" />
+          <EntitySet Name="reports" EntityType="Self.report" />
+          <EntitySet Name="transactions" EntityType="Self.transaction" />
+          <AssociationSet Name="FK__accounts__parent__38996AB5" Association="Self.FK__accounts__parent__38996AB5">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="accounts1" EntitySet="accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__budgets__account__46E78A0C" Association="Self.FK__budgets__account__46E78A0C">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="budgets" EntitySet="budgets" />
+          </AssociationSet>
+          <AssociationSet Name="FK__transacti__accou__3C69FB99" Association="Self.FK__transacti__accou__3C69FB99">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__invoice_i__invoi__4316F928" Association="Self.FK__invoice_i__invoi__4316F928">
+            <End Role="invoices" EntitySet="invoices" />
+            <End Role="invoice_items" EntitySet="invoice_items" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ERPSYSTEMModelStoreContainer" CdmEntityContainer="ERPSYSTEMEntities">
+          <EntitySetMapping Name="accounts">
+            <EntityTypeMapping TypeName="ERPSYSTEMModel.account">
+              <MappingFragment StoreEntitySet="accounts">
+                <ScalarProperty Name="account_id" ColumnName="account_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="parent_id" ColumnName="parent_id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="budgets">
+            <EntityTypeMapping TypeName="ERPSYSTEMModel.budget">
+              <MappingFragment StoreEntitySet="budgets">
+                <ScalarProperty Name="budget_id" ColumnName="budget_id" />
+                <ScalarProperty Name="account_id" ColumnName="account_id" />
+                <ScalarProperty Name="fiscal_year" ColumnName="fiscal_year" />
+                <ScalarProperty Name="allocated" ColumnName="allocated" />
+                <ScalarProperty Name="spent" ColumnName="spent" />
+                <ScalarProperty Name="remaining" ColumnName="remaining" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="invoice_items">
+            <EntityTypeMapping TypeName="ERPSYSTEMModel.invoice_items">
+              <MappingFragment StoreEntitySet="invoice_items">
+                <ScalarProperty Name="item_id" ColumnName="item_id" />
+                <ScalarProperty Name="invoice_id" ColumnName="invoice_id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="unit_price" ColumnName="unit_price" />
+                <ScalarProperty Name="tax_percent" ColumnName="tax_percent" />
+                <ScalarProperty Name="total" ColumnName="total" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="invoices">
+            <EntityTypeMapping TypeName="ERPSYSTEMModel.invoice">
+              <MappingFragment StoreEntitySet="invoices">
+                <ScalarProperty Name="invoice_id" ColumnName="invoice_id" />
+                <ScalarProperty Name="customer_name" ColumnName="customer_name" />
+                <ScalarProperty Name="issue_date" ColumnName="issue_date" />
+                <ScalarProperty Name="due_date" ColumnName="due_date" />
+                <ScalarProperty Name="subtotal" ColumnName="subtotal" />
+                <ScalarProperty Name="tax_rate" ColumnName="tax_rate" />
+                <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+                <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="reports">
+            <EntityTypeMapping TypeName="ERPSYSTEMModel.report">
+              <MappingFragment StoreEntitySet="reports">
+                <ScalarProperty Name="report_id" ColumnName="report_id" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="period_start" ColumnName="period_start" />
+                <ScalarProperty Name="period_end" ColumnName="period_end" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="file_path" ColumnName="file_path" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="transactions">
+            <EntityTypeMapping TypeName="ERPSYSTEMModel.transaction">
+              <MappingFragment StoreEntitySet="transactions">
+                <ScalarProperty Name="transaction_id" ColumnName="transaction_id" />
+                <ScalarProperty Name="account_id" ColumnName="account_id" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="related_id" ColumnName="related_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
