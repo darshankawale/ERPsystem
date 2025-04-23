@@ -27,6 +27,15 @@ namespace ERPsystem.Controllers
         
         }
 
+        public ActionResult Login()
+        {
+
+            return View();
+
+        }
+
+
+
 
     }
 }
