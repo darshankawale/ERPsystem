@@ -11,7 +11,7 @@ namespace ERPsystem.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            //This is fgfggfg ghffgf vffgfgfgf
+            //This is fgfggfg ghffgf vffgfgfgf fgfgf
 //adddd
 // thi s 
             return View();
