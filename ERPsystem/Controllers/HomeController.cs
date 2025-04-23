@@ -12,6 +12,7 @@ namespace ERPsystem.Controllers
         public ActionResult Index()
         {
             //This is index page tehen push
+//adddd
             return View();
         }
         public ActionResult About()
