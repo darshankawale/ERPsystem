@@ -12,20 +12,18 @@ namespace ERPsystem.Controllers
     public class AdminController : Controller
     {
         // GET: Admin
-        ERPSYSTEMEntities eee = new ERPSYSTEMEntities();
+        oprationdav oo= new oprationdav();  
         public ActionResult Index()
         {
 
-            var f = eee.transactions.ToList();
-           
-            return View();
+
+           object  a=  oo.list();
+            return View(a);
         }
 
 
-        public ActionResult Addtransations()
-        {
-            
-            return View();
-        }
+       
+
+
     }
 }
