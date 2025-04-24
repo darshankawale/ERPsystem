@@ -1,0 +1,82 @@
+﻿@model ERPsystem.budget
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Budget</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .card {
+            border-radius: 1rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container form-container">
+        <div class="card shadow rounded-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Create Budget</h4>
+            </div>
+            <div class="card-body">
+                <form action="Budgetadd" method="post">
+                    <!-- Account ID -->
+                    <div class="mb-3">
+                        <label for="accountId" class="form-label">Account ID</label>
+                        <input type="number" class="form-control" id="accountId" name="account_id" required min="1" />
+                    </div>
+
+                    <!-- Fiscal Year -->
+                    <div class="mb-3">
+                        <label for="fiscalYear" class="form-label">Fiscal Year</label>
+                        <input type="number" class="form-control" id="fiscalYear" name="fiscal_year" required min="2000" max="2100" />
+                    </div>
+
+                    <!-- Allocated -->
+                    <div class="mb-3">
+                        <label for="allocated" class="form-label">Allocated Amount (₹)</label>
+                        <input type="number" class="form-control" id="allocated" name="allocated" step="0.01" required min="0" oninput="calculateRemaining()" />
+                    </div>
+
+                    <!-- Spent -->
+                    <div class="mb-3">
+                        <label for="spent" class="form-label">Spent Amount (₹)</label>
+                        <input type="number" class="form-control" id="spent" name="spent" step="0.01" required min="0" oninput="calculateRemaining()" />
+                    </div>
+
+                    <!-- Remaining -->
+                    <div class="mb-3">
+                        <label for="remaining" class="form-label">Remaining Amount (₹)</label>
+                        <input type="number" class="form-control" id="remaining" name="remaining" step="0.01" readonly />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success w-100">Submit Budget</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateRemaining() {
+            const allocated = parseFloat(document.getElementById('allocated').value) || 0;
+            const spent = parseFloat(document.getElementById('spent').value) || 0;
+            const remaining = allocated - spent;
+            document.getElementById('remaining').value = remaining.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>
