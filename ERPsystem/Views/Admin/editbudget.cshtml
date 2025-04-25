@@ -1,0 +1,89 @@
+﻿@model ERPsystem.budget
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Edit Budget</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container form-container">
+        <div class="card shadow-lg rounded-4">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0">Edit Budget</h4>
+            </div>
+            <div class="card-body">
+                <form action="BudgetEdit" method="post">
+                    <!-- Hidden ID -->
+                    <input type="hidden" name="budget_id" value="@Model.budget_id" />
+
+                    <!-- Account Dropdown -->
+                    <div class="mb-3">
+                        <label for="account_id" class="form-label">Account</label>
+                        <select class="form-select" id="account_id" name="account_id" required>
+                            <option value="">-- Select Account --</option>
+                            @foreach (ERPsystem.account acc in ViewBag.Accounts.Items)
+                            {
+                                <option value="@acc.account_id" @(acc.account_id == Model.account_id ? "selected" : "")>
+                                    @acc.name
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Fiscal Year -->
+                    <div class="mb-3">
+                        <label for="fiscal_year" class="form-label">Fiscal Year</label>
+                        <input type="number" id="fiscal_year" name="fiscal_year" class="form-control"
+                               min="2000" max="2100" required value="@Model.fiscal_year" />
+                    </div>
+
+                    <!-- Allocated -->
+                    <div class="mb-3">
+                        <label for="allocated" class="form-label">Allocated Amount</label>
+                        <input type="number" id="allocated" name="allocated" class="form-control"
+                               step="0.01" min="0" required value="@Model.allocated" oninput="calculateRemaining()" />
+                    </div>
+
+                    <!-- Spent -->
+                    <div class="mb-3">
+                        <label for="spent" class="form-label">Spent Amount</label>
+                        <input type="number" id="spent" name="spent" class="form-control"
+                               step="0.01" min="0" required value="@Model.spent" oninput="calculateRemaining()" />
+                    </div>
+
+                    <!-- Remaining -->
+                    <div class="mb-3">
+                        <label for="remaining" class="form-label">Remaining Amount</label>
+                        <input type="number" id="remaining" name="remaining" class="form-control"
+                               step="0.01" min="0" required readonly value="@Model.remaining" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Update Budget</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateRemaining() {
+            const allocated = parseFloat(document.getElementById('allocated').value) || 0;
+            const spent = parseFloat(document.getElementById('spent').value) || 0;
+            const remaining = allocated - spent;
+            document.getElementById('remaining').value = remaining.toFixed(2);
+        }
+
+        // Recalculate when the page loads
+        window.onload = calculateRemaining;
+    </script>
+
+</body>
+</html>
