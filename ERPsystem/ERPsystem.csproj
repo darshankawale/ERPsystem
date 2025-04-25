@@ -169,7 +169,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Admin\Budgetshow.cshtml" />
-    <Content Include="Views\Admin\Budgetadd.cshtml" />
     <Content Include="Views\Admin\editbudget.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

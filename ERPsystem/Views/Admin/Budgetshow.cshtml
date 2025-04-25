@@ -10,9 +10,8 @@
     <meta name="viewport" content="width=device-width" />
     <title>Budget List</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
@@ -42,14 +41,20 @@
         .card {
             border-radius: 1rem;
         }
+
+        .modal-content {
+            border-radius: 1rem;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Budget Records</h4>
-                <a href="@Url.Action("Budgetadd", "Admin")" class="btn btn-light">+ Create New</a>
+                <!-- Trigger Modal Button -->
+                <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createBudgetModal">+ Create New</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -61,13 +66,17 @@
                                 <th>Spent</th>
                                 <th>Remaining</th>
                                 <th>Account Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach (var item in Model)
                             {
                                 <tr>
                                     <td>@item.fiscal_year</td>
-                                    <td>@item.allocated</td>
-                                    <td>@item.spent</td>
-                                    <td>@item.remaining</td>
+                                    <td>₹@item.allocated</td>
+                                    <td>₹@item.spent</td>
+                                    <td>₹@item.remaining</td>
                                     <td>@item.account.name</td>
                                     <td class="action-icons">
                                         <a href="@Url.Action("editbudget", "Admin", new { id = item.budget_id })" title="Edit">
@@ -88,5 +97,75 @@
             </div>
         </div>
     </div>
+
+    <!-- Create Budget Modal -->
+    <div class="modal fade" id="createBudgetModal" tabindex="-1" aria-labelledby="createBudgetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg rounded-4">
+                <!-- Modal Header -->
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title fw-semibold" id="createBudgetModalLabel">Create New Budget</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body px-4 py-3">
+                    <form action="@Url.Action("Budgetadd", "Admin")" method="post">
+                        <!-- Account ID -->
+                        <div class="mb-3">
+                            <label for="accountId" class="form-label fw-semibold">Account ID</label>
+                            <input type="number" class="form-control border-primary shadow-sm" id="accountId" name="account_id" required min="1" placeholder="Enter Account ID">
+                        </div>
+
+                        <!-- Fiscal Year -->
+                        <div class="mb-3">
+                            <label for="fiscalYear" class="form-label fw-semibold">Fiscal Year</label>
+                            <input type="number" class="form-control border-primary shadow-sm" id="fiscalYear" name="fiscal_year" required min="2000" max="2100" placeholder="e.g. 2025">
+                        </div>
+
+                        <!-- Allocated -->
+                        <div class="mb-3">
+                            <label for="allocated" class="form-label fw-semibold">Allocated Amount (₹)</label>
+                            <input type="number" class="form-control border-success shadow-sm" id="allocated" name="allocated" step="0.01" required min="0" placeholder="0.00" oninput="calculateRemaining()">
+                        </div>
+
+                        <!-- Spent -->
+                        <div class="mb-3">
+                            <label for="spent" class="form-label fw-semibold">Spent Amount (₹)</label>
+                            <input type="number" class="form-control border-danger shadow-sm" id="spent" name="spent" step="0.01" required min="0" placeholder="0.00" oninput="calculateRemaining()">
+                        </div>
+
+                        <!-- Remaining -->
+                        <div class="mb-3">
+                            <label for="remaining" class="form-label fw-semibold">Remaining Amount (₹)</label>
+                            <input type="number" class="form-control bg-light shadow-sm" id="remaining" name="remaining" step="0.01" readonly placeholder="Auto Calculated">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success px-4">Submit Budget</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS for calculating remaining -->
+    <script>
+        function calculateRemaining() {
+            const allocated = parseFloat(document.getElementById('allocated').value) || 0;
+            const spent = parseFloat(document.getElementById('spent').value) || 0;
+            const remaining = allocated - spent;
+            document.getElementById('remaining').value = remaining.toFixed(2);
+        }
+    </script>
+
 </body>
 </html>
+
